@@ -5,12 +5,19 @@ include "../helpers/dataHelper.php";
 include "../helpers/functions.php";
 
 // Array asociativo del JSON de categorias
-$comentarios = getDataFromJSON('comentarios');
-$productos = getDataFromJSON('productos');
+// $comentarios = getDataFromJSON('comentarios');
+// $productos = getDataFromJSON('productos');
+require __DIR__."/../helpers/connection.php";
+// Array asociativo del JSON de marcas
+$sql = "SELECT * FROM comments";
+
+$comments = $con->query($sql);
 
 if(!empty($_GET['del'])){
-    unset($comentarios[$_GET['del']]);
-    setDataJSON('comentarios', $comentarios);
+    $sql = "UPDATE comments SET deleted_at = NOW() WHERE brand_id = ".$_GET['del'];
+    $con->query($sql);
+    // unset($comentarios[$_GET['del']]);
+    // setDataJSON('comentarios', $comentarios);
 }
 ?>
     <div class="container-fluid">
@@ -24,7 +31,6 @@ if(!empty($_GET['del'])){
                         <option value="0">
                             Ver todos
                         </option>
-
                         <?php foreach ($productos as $producto): ?>
                             <option value="<?php echo $producto['id'] ?>" <?php echo isset($_GET['id_producto']) && $_GET['id_producto'] == $producto['id'] ? 'selected' : '' ?>  >
                                 <?php echo $producto['nombre'] ?>
@@ -49,23 +55,24 @@ if(!empty($_GET['del'])){
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach($comentarios as $comentario): ?>
-                            <?php if( (isset($_GET['id_producto']) && ($comentario['id_producto'] == $_GET['id_producto'] || $_GET['id_producto'] == 0)) || !isset($_GET['id_producto']) ):  ?>
-                            <tr>
-                                <td><?php echo $comentario['id'] ?></td>
-                                <td><?php echo $comentario['nombre'] ?></td>
-                                <td><?php echo $productos[$comentario['id_producto']]['nombre'] ?></td>
-                                <td><?php echo $comentario['comentario'] ?></td>
-                                <td><a class="btn btn-danger" href="comentarios.php?del=<?php echo $comentario['id'] ?>"><i class="fas fa-trash-alt"></i></a></td>
-                            </tr>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+                            <?php foreach($comments as $comentario): ?>
+                                <?php if($comentario['is_visible'] == NULL): ?>
+                                    <?php if( (isset($_GET['id_producto']) && ($comentario['id_producto'] == $_GET['id_producto'] || $_GET['id_producto'] == 0)) || !isset($_GET['id_producto']) ):  ?>
+                                        <tr>
+                                            <td><?php echo $comentario['comment_id'] ?></td>
+                                            <td><?php echo $comentario['user_id'] ?></td>
+                                            <td><?php echo $productos[$comentario['product_id']]['user_id'] ?></td>
+                                            <td><?php echo $comentario['description'] ?></td>
+                                            <td><a class="btn btn-danger" href="comentarios.php?del=<?php echo $comentario['comment_id'] ?>"><i class="fas fa-trash-alt"></i></a></td>
+                                        </tr>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
     </div>
 
 <?php

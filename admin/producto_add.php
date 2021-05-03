@@ -4,21 +4,43 @@ include "includes/header.php";
 include "../helpers/dataHelper.php";
 include "../helpers/functions.php";
 
+require __DIR__."/../helpers/connection.php";
+
 // Array asociativo del JSON de productos
 $productos = getDataFromJSON('productos');
 
+$sqlCategories = "SELECT * FROM categories WHERE deleted_at IS NULL";
+
+$sqlBrands = "SELECT * FROM brands WHERE deleted_at IS NULL";
+
+$categories = $con->query($sqlCategories);
+
+$brands = $con->query($sqlBrands);
+
 // POST
 if(isset($_POST['add'])){
+
+    $name = $_POST['nombre'];
+    $descripcion = $_POST['descripcion'];
+    $categoria = $_POST['categoria'];
+    $marca = $_POST['marca'];
+    $precio = $_POST['precio'];
+    $stock = $_POST['stock'];
+    $imagen = $_POST['archivo'];
+    
+
     if(!empty($_GET['id'])){
-        // Id del producto
-        $id = $_GET['id'];
-        // Informacion del producto
-        $producto = $productos[$id];
+
+        $sql = "UPDATE products SET name = '$name', description = '$descripcion',
+        category_id = '$categoria', brand_id = '$marca', price = '$precio',
+        stock = '$stock', image = '$imagen' WHERE product_id = ".$_GET['id'];
+        $con->query($sql);
     }
     else
     {
-        // Generar nuevo Id de producto
-        $id = date('Ymdhis');
+        $sql = "INSERT INTO products(name, description, category_id, brand_id, price, stock, image) 
+        VALUES ('$name', '$descripcion', '$categoria', '$marca', '$precio', '$stock', '$imagen')";        
+        $con->query($sql);
     }
 
     $archivo = $_FILES['archivo']['name'];
@@ -35,19 +57,6 @@ if(isset($_POST['add'])){
         else
             move_uploaded_file($temp, '../imagenes/'.$archivo);
     }
-
-    $productos[$id] = [
-        'id'=>$id,
-        'nombre'=>$_POST['nombre'],
-        'descripcion'=>$_POST['descripcion'],
-        'precio'=>$_POST['precio'],
-        'stock'=>$_POST['stock'],
-        'id_categoria'=>$_POST['categoria'],
-        'id_marca'=>$_POST['marca'],
-        'imagen'=> !empty($archivo) ? $archivo : $productos[$id]['imagen']
-    ];
-
-    setDataJSON('productos', $productos);
 
     redirect('productos.php');
 }
@@ -84,29 +93,26 @@ $marcas = getDataFromJSON('marcas');
                         <label for="exampleInputEmail1">Nombre</label>
                         <input type="text" class="form-control" name="nombre" value="<?php echo !empty($producto['nombre']) ? $producto['nombre'] : ''?>">
                     </div>
-
                     <div class="form-group">
                         <label for="exampleInputPassword1">Descripcion</label>
                         <textarea class="form-control" name="descripcion" ><?php echo !empty($producto['descripcion'] ) ? $producto['descripcion'] : '' ?></textarea>
                     </div>
-
                     <div class="form-group">
                         <label for="categoria">Categoria</label>
                         <select name="categoria" id="categoria" class="form-control">
-                            <?php foreach($categorias as $categoria): ?>
-                            <option value="<?php echo $categoria['id'] ?>" <?php echo !empty($producto['id_categoria']) ?  $categoria['id'] == $producto['id_categoria'] ?  "selected" : '' : '' ?> >
-                                <?php echo $categoria['nombre']  ?>
+                            <?php foreach($categories as $categoria): ?>
+                            <option value="<?php echo $categoria['category_id'] ?>">
+                                <?php echo $categoria['name']  ?>
                             </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label for="categoria">Marca</label>
                         <select name="marca" id="marca" class="form-control">
-                            <?php foreach($marcas as $marca): ?>
-                                <option value="<?php echo $marca['id'] ?>" <?php echo !empty($producto['id_marca']) ?  $marca['id'] == $producto['id_marca'] ?  "selected" : '' : '' ?> >
-                                    <?php echo $marca['nombre']  ?>
+                            <?php foreach($brands as $marca): ?>
+                                <option value="<?php echo $marca['brand_id'] ?>" >
+                                    <?php echo $marca['name']  ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>

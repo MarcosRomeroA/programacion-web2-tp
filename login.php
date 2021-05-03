@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="zxx">
 <head>
@@ -28,6 +29,7 @@
         <!-- Header End -->
     </header>
     <main>
+    
         <!-- Hero Area Start-->
         <div class="slider-area ">
             <div class="single-slider slider-height2 d-flex align-items-center">

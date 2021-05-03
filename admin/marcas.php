@@ -4,11 +4,14 @@ include "includes/header.php";
 include "../helpers/dataHelper.php";
 include "../helpers/functions.php";
 
+require __DIR__."/../helpers/connection.php";
 // Array asociativo del JSON de marcas
-$marcas = getDataFromJSON('marcas');
+$sql = "SELECT * FROM brands";
+
+$brands = $con->query($sql);
 if(!empty($_GET['del'])){
-    unset($marcas[$_GET['del']]); //borra con el id
-    setDataJSON('marcas', $marcas);
+    $sql = "UPDATE brands SET deleted_at = NOW() WHERE brand_id = ".$_GET['del'];
+    $con->query($sql);
     redirect('marcas.php');
 }
 
@@ -32,17 +35,19 @@ if(!empty($_GET['del'])){
                         </tr>
                         </thead>
                         <tbody>
-                        <?php foreach($marcas as $marca): ?>
-                        <tr>
-                            <td><?php echo $marca['id'] ?></td>
-                            <td><?php echo $marca['nombre'] ?></td>
-                            <td style="display: flex; justify-content: space-around; width: 115px;">
-                               <!-- boton de editar -->
-                                <a class="btn btn-info" href="marca_add.php?id=<?php echo $marca['id'] ?>"><i class="fas fa-edit"></i></a>
-                                <!-- boton de borrar -->
-                                <a class="btn btn-danger" href="marcas.php?del=<?php echo $marca['id'] ?>"><i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
+                        <?php foreach($brands as $marca): ?>
+                            <?php if($marca['deleted_at'] == NULL): ?>
+                                <tr>
+                                    <td><?php echo $marca['brand_id'] ?></td>
+                                    <td><?php echo $marca['name'] ?></td>
+                                    <td style="display: flex; justify-content: space-around; width: 115px;">
+                                    <!-- boton de editar -->
+                                        <a class="btn btn-info" href="marca_add.php?id=<?php echo $marca['brand_id'] ?>"><i class="fas fa-edit"></i></a>
+                                        <!-- boton de borrar -->
+                                        <a class="btn btn-danger" href="marcas.php?del=<?php echo $marca['brand_id'] ?>"><i class="fas fa-trash-alt"></i></a>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                         </tbody>
                     </table>

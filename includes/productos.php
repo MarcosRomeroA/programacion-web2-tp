@@ -9,6 +9,13 @@ $productos = getDataFromJSON('productos');
 $marcas = getDataFromJSON('marcas');
 
 ?>
+
+<?php
+
+include('config/db.php');
+?> 
+
+<?php include('helpers/connection.php')?>
         
 <!-- Latest Products Start -->
 <section id="productos" class="popular-items latest-padding" style="padding-top: 50px!important;">
@@ -56,7 +63,7 @@ $marcas = getDataFromJSON('marcas');
             <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                 <div class="row">
 
-                    <?php foreach($productos as $producto): ?>
+                    <?php foreach($productos as $producto){?>
 
                         <?php if(
                                 ( isset($_GET['categoria']) && $producto['id_categoria'] == $_GET['categoria'] ) &&
@@ -76,7 +83,7 @@ $marcas = getDataFromJSON('marcas');
                                         </div>
                                     </div>
                                     <div class="popular-caption">
-                                        <h3><a href="product_details.php?id=<?php echo $producto['id']?>"><?php echo $producto['nombre'] ?></a></h3>
+                                        <h3><a href="product_details.php?prodId=<?php echo $producto['id']?>"><?php echo $producto['nombre'] ?></a></h3>
                                         <span>$ <?php echo number_format($producto['precio'], 2, ",", ".")  ?></span>
                                     </div>
                                 </div>
@@ -96,7 +103,7 @@ $marcas = getDataFromJSON('marcas');
                                         </div>
                                     </div>
                                     <div class="popular-caption">
-                                        <h3><a href="product_details.php?id=<?php echo $producto['id']?>"><?php echo $producto['nombre'] ?></a></h3>
+                                        <h3><a href="product_details.php?prodId=<?php echo $producto['id']?>"><?php echo $producto['nombre'] ?></a></h3>
                                         <span>$ <?php echo number_format($producto['precio'], 2, ",", ".")  ?></span>
                                     </div>
                                 </div>
@@ -116,7 +123,7 @@ $marcas = getDataFromJSON('marcas');
                                         </div>
                                     </div>
                                     <div class="popular-caption">
-                                        <h3><a href="product_details.php?id=<?php echo $producto['id']?>"><?php echo $producto['nombre'] ?></a></h3>
+                                        <h3><a href="product_details.php?prodId=<?php echo $producto['id']?>"><?php echo $producto['nombre'] ?></a></h3>
                                         <span>$ <?php echo number_format($producto['precio'], 2, ",", ".")  ?></span>
                                     </div>
                                 </div>
@@ -136,7 +143,7 @@ $marcas = getDataFromJSON('marcas');
                                         </div>
                                     </div>
                                     <div class="popular-caption">
-                                        <h3><a href="product_details.php?id=<?php echo $producto['id']?>"><?php echo $producto['nombre'] ?></a></h3>
+                                        <h3><a href="product_details.php?prodId=<?php echo $producto['id']?>"><?php echo $producto['nombre'] ?></a></h3>
                                         <span>$ <?php echo number_format($producto['precio'], 2, ",", ".")  ?></span>
                                     </div>
                                 </div>
@@ -144,7 +151,7 @@ $marcas = getDataFromJSON('marcas');
                         <?php endif; ?>
 
 
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </div>
             </div>
         </div>

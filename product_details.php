@@ -3,7 +3,8 @@ include_once "helpers/dataHelper.php";
 
 $productos = getDataFromJSON('productos');
 
-$comentarios = getDataFromJSON('comentarios');
+$sql = "SELECT * FROM comments";
+$comentarios = $con->query($sql);
 
 if(isset($_POST['add'])){
 
@@ -56,17 +57,18 @@ if(isset($_POST['add'])){
         <div class="product_image_area">
             <div class="container">
                 <div class="row justify-content-center">
-                    <img src="imagenes/<?php echo $productos[$_GET['id']]['imagen'] ?>" alt="Gato">
+                    
+                    <img src="imagenes/<?php echo $productos[$_GET['prodId']]['imagen'] ?>" alt="Gato">
                 </div>
                 <div class="col-lg-12">
                     <div class="single_product_text text-center">
-                        <h3><?php echo $productos[$_GET['id']]['nombre'] ?> </h3>
-                        <p><?php echo $productos[$_GET['id']]['descripcion'] ?>
+                        <h3><?php echo $productos[$_GET['prodId']]['nombre'] ?> </h3>
+                        <p><?php echo $productos[$_GET['prodId']]['descripcion'] ?>
                         </p>
 
                         <div class="card_area">
                             <div class="product_count_area">
-                                <?php echo "$" . number_format($productos[$_GET['id']]['precio'], 2, ',', '.') ?>
+                                <?php echo "$" . number_format($productos[$_GET['prodId']]['precio'], 2, ',', '.') ?>
                             </div>
                             <div class="add_to_cart">
                                 <a href="#" class="btn_3">Añadir al carrito</a>
@@ -102,7 +104,7 @@ if(isset($_POST['add'])){
 
             ?>
             <?php $i = 0; foreach ($comentarios as $comentario): ?>
-                <?php if($comentario['id_producto'] == $_GET['id']): ?>
+                <?php if($comentario['id_producto'] == $_GET['prodId']): ?>
                     <?php $i++; ?>
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">

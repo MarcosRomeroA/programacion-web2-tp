@@ -4,11 +4,14 @@ include "includes/header.php";
 include "../helpers/dataHelper.php";
 include "../helpers/functions.php";
 
+require __DIR__."/../helpers/connection.php";
+
 // Array asociativo del JSON de productos
-$productos = getDataFromJSON('productos');
+// $productos = getDataFromJSON('productos');
 
 // // Array asociativo del JSON de categorias
-$categorias = getDataFromJSON('categorias');
+// $categorias = getDataFromJSON('categorias');
+
 
 
 if(!empty($_GET['del'])){

@@ -1,3 +1,6 @@
+<?php 
+  include('config/db.php');
+?> 
 <!doctype html>
 <html class="no-js" lang="zxx">
 <head>
@@ -25,7 +28,7 @@
 
 <body>
     <?php include('includes/navbar.php'); ?>
-
+    <?php include('helpers/connection.php')?>
     <main>
         <?php include('includes/header.php') ?>
         <?php include('includes/new_arrivals.php') ?>

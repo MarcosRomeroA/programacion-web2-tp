@@ -4,38 +4,40 @@ include "includes/header.php";
 include "../helpers/dataHelper.php";
 include "../helpers/functions.php";
 
+
+require __DIR__."/../helpers/connection.php";
+
 // Array asociativo del JSON de marcas
-$marcas = getDataFromJSON('marcas');
+// $marcas = getDataFromJSON('marcas');
 
 // POST
 if(isset($_POST['add'])){
+
+    $name = $_POST['nombre'];
+
     if(!empty($_GET['id'])){
-        // Id del marca
-        $id = $_GET['id'];
-        // Informacion del marca
-        $marca = $marcas[$id];
+
+        $sql = "UPDATE brands SET name = '$name' WHERE brand_id = ".$_GET['id'];
+        $con->query($sql);
     }
     else
     {
-        // Generar nuevo Id de marcas
-        $id = date('Ymdhis');
+        $sql = "INSERT INTO brands(name) VALUES ('$name')";        
+        $con->query($sql);
     }
 
-    $marcas[$id] = [
-        'id'=>$id,
-        'nombre'=>$_POST['nombre'],
-    ];
-
-    setDataJSON('marcas', $marcas);
+    // setDataJSON('marcas', $marcas);
 
     redirect('marcas.php');
 }
 
 if(!empty($_GET['id'])){
-    // Array asociativo del JSON de marcas
-    $marcas = getDataFromJSON('marcas');
-    // Informacion del marca del id enviado por GET
-    $marca = $marcas[$_GET['id']];
+    $sql = "SELECT * FROM brands WHERE brand_id = ".$_GET['id'];
+   
+    $categoria = $con->query($sql);
+    foreach($categoria as $row) {
+        $name = $row['name'];
+    }
 }
 
 $marcas = getDataFromJSON('marcas');
@@ -56,7 +58,7 @@ $marcas = getDataFromJSON('marcas');
                 <form action="" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="exampleInputEmail1">Nombre</label>
-                        <input type="text" class="form-control" name="nombre" value="<?php echo !empty($marca['nombre']) ? $marca['nombre'] : ''?>">
+                        <input type="text" class="form-control" name="nombre" value="<?php echo $name ?? '' ?>">
                     </div>
                     <button type="submit" name="add" class="btn btn-primary">Enviar</button>
                 </form>
